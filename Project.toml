@@ -1,0 +1,13 @@
+name = "ContextManagers"
+uuid = "51ca0b03-0667-4ad4-bb9a-29a7d42ecc1f"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0-DEV"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
