@@ -70,5 +70,43 @@ function ContextManagers.exit(td::TemporaryDirectory)
     rm(path; force = true, recursive = true)
 end
 
+"""
+    ContextManagers.IgnoreError()
+
+Ignore an error (if any).
+
+# Example
+
+```jldoctest
+julia> using ContextManagers: @with, IgnoreError
+
+julia> @with(
+           IgnoreError(),
+       ) do
+           error("error")
+       end
+```
+
+# Extended help
+
+Note that `IgnoreError` only ignores the error from the "inner" code.  That is
+to say, in the following code, the error from the `doblock` and the context
+managers `c` and `d` are ignored but not the error from the context managers `a`
+and `b`.
+
+```
+@with(
+    a,
+    b,
+    IgnoreError(),
+    c,
+    d,
+) do
+    doblock
+end
+```
+"""
+ContextManagers.IgnoreError
+
 ContextManagers.maybeenter(ie::ContextManagers.IgnoreError) = ie
 ContextManagers.exit(::ContextManagers.IgnoreError, _) = ContextManagers.Handled()

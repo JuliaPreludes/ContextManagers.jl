@@ -37,6 +37,12 @@ include("base.jl")
 include("sharedresources.jl")
 include("docs.jl")
 
+# Use README as the docstring of the module:
+@doc let path = joinpath(dirname(@__DIR__), "README.md")
+    include_dependency(path)
+    replace(read(path, String), r"^```julia"m => "```jldoctest README")
+end ContextManagers
+
 end  # module Internal
 
 baremodule __ContextManagers_Extras_API

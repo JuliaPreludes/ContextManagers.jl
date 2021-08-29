@@ -13,7 +13,7 @@ Open resources, run the do block body, and cleanup the resources.
 :(ContextManagers.@with)
 
 """
-    ContextManagers.with(init...) do resources...
+    ContextManagers.with(sources...) do resources...
         use(resources...)
     end
 

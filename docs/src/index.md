@@ -1,6 +1,7 @@
 # ContextManagers.jl
 
 ```@docs
+ContextManagers
 ContextManagers.@with
 ContextManagers.with
 ```
@@ -11,6 +12,9 @@ ContextManagers.with
 ContextManagers.opentemp
 ContextManagers.opentempdir
 ContextManagers.SharedResource
+ContextManagers.IgnoreError
+ContextManagers.onexit
+ContextManagers.onfail
 ```
 
 ## Interface

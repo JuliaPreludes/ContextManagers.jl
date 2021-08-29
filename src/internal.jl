@@ -93,6 +93,27 @@ ContextManagers.value(x) = x
 
 ContextManagers.closing(x) = ContextManagers.onexit(close, x)
 
+"""
+    ContextManagers.onexit(cleanup, x)
+
+Create a context manager that runs `cleanup(x)` upon exit.
+
+# Example
+
+```jldoctest
+julia> using ContextManagers: @with, onexit
+
+julia> @with(
+           onexit(111) do x
+               @show x
+           end,
+       ) do
+       end;
+x = 111
+```
+"""
+ContextManagers.onexit
+
 struct OnExit{C,T}
     close::C
     value::T
@@ -102,6 +123,36 @@ ContextManagers.onexit(close::F, value) where {F} = OnExit(close, value)
 ContextManagers.maybeenter(c::OnExit) = c
 ContextManagers.value(c::OnExit) = c.value
 ContextManagers.exit(c::OnExit) = c.close(c.value)
+
+"""
+    ContextManagers.onfail(cleanup, x)
+
+Create a context manager that runs `cleanup(x)` upon unsuccessful exit.
+
+# Example
+
+```jldoctest
+julia> using ContextManagers: @with, IgnoreError, onfail
+
+julia> @with(
+           onfail(111) do x
+               @show x
+           end,
+       ) do
+       end;  # prints nothing
+
+julia> @with(
+           IgnoreError(),
+           onfail(111) do x
+               @show x
+           end,
+       ) do
+           error("error")
+       end;
+x = 111
+```
+"""
+ContextManagers.onfail
 
 struct OnFail{C,T}
     close::C
