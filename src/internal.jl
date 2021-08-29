@@ -91,14 +91,14 @@ end
 
 ContextManagers.value(x) = x
 
-ContextManagers.closing(x) = ContextManagers.closingwith(close, x)
+ContextManagers.closing(x) = ContextManagers.onexit(close, x)
 
-struct Closing{C,T}
+struct OnExit{C,T}
     close::C
     value::T
 end
 
-ContextManagers.closingwith(close::F, value) where {F} = Closing(close, value)
-ContextManagers.maybeenter(c::Closing) = c
-ContextManagers.value(c::Closing) = c.value
-ContextManagers.exit(c::Closing) = c.close(c.value)
+ContextManagers.onexit(close::F, value) where {F} = OnExit(close, value)
+ContextManagers.maybeenter(c::OnExit) = c
+ContextManagers.value(c::OnExit) = c.value
+ContextManagers.exit(c::OnExit) = c.close(c.value)

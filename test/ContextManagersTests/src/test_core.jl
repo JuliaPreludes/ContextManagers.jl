@@ -10,10 +10,10 @@ function test_ignoreerror()
     @test true
 end
 
-function test_closingwith()
+function test_onexit()
     calledwith = []
     @with(
-        int = ContextManagers.closingwith(111) do x
+        int = ContextManagers.onexit(111) do x
             push!(calledwith, x)
         end,
         io = ContextManagers.closing(IOBuffer()),
@@ -50,10 +50,10 @@ function test_error_in_exit()
     calledwith = []
     @with(
         IgnoreError(),
-        int = ContextManagers.closingwith(111) do x
+        int = ContextManagers.onexit(111) do x
             push!(calledwith, x)
         end,
-        ContextManagers.closingwith(nothing) do _
+        ContextManagers.onexit(nothing) do _
             error("error")
         end,
     ) do

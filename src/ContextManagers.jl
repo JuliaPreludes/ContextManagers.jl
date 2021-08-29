@@ -8,7 +8,7 @@ function exit end
 function with end
 macro with end
 
-function closingwith end
+function onexit end
 function closing end
 
 struct Handled end
