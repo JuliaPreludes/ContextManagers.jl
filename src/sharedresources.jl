@@ -10,21 +10,36 @@ shared resource is closed.
 
 `SharedResource` supports the following pattern
 
-```julia
+```jldoctest
+using Base.Threads: @spawn
+using ContextManagers: @with, SharedResource
+
+output = Int[]
 @sync begin
-    @with(handle = SharedResource(source)) do  # (1)
-        for x in xs
-            context = open(handle)  # (2)
+    ch = Channel()
+    @with(handle = SharedResource(ch)) do       # (1) create a `handle`
+        for x in 1:3
+            context = open(handle)              # (2) refcount++
             @spawn begin
-                @with(value = context) do  # (3)
-                    use(value, x)
-                end  # (4a)
+                @with(ch = context) do          # (3) obtain the `ch` value
+                    put!(ch, x)
+                end                             # (4a) refcount--; maybe cleanup
             end
         end
-    end  # (4b)
-    ...
+    end                                         # (4b) refcount--; maybe cleanup
+    append!(output, ch)
 end
+
+sort!(output)
+
+# output
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
 ```
+
+# Extended help
 
 (1) The underling `source` is entered when `SharedResource` is entered.  A
 `handle` to this shared resource can be obtained by entering the context of the
@@ -42,15 +57,12 @@ context.  In the above pattern, the context of the `source` may exit at the
 `end` (4b) of the outer `@with` if `xs` is empty or all the child tasks exit
 first.
 
-# Extended help
 ## Notes
 
 This is inspired by Nathaniel J. Smith's comment:
 <https://github.com/python-trio/trio/issues/719#issuecomment-462119589>
 """
-struct SharedResource{Source}
-    source::Source
-end
+ContextManagers.SharedResource
 
 struct SharedHandle{Context}
     context::Context

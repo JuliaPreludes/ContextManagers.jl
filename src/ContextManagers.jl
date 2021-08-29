@@ -23,9 +23,13 @@ struct IgnoreError end
 function opentemp end
 function opentempdir end
 
+struct SharedResource{Source}
+    source::Source
+end
+
 module Internal
 
-using ..ContextManagers: ContextManagers, Handled
+using ..ContextManagers: ContextManagers, Handled, SharedResource
 import ..ContextManagers: @with
 
 include("internal.jl")
@@ -34,8 +38,6 @@ include("sharedresources.jl")
 include("docs.jl")
 
 end  # module Internal
-
-const SharedResource = Internal.SharedResource
 
 baremodule __ContextManagers_Extras_API
 using ..ContextManagers:

@@ -1,12 +1,14 @@
 """
     @with(
-        resource1 = init1,
-        resource2 = init2,
+        resource₁ = source₁,
+        resource₂ = source₂,
         ...
-        resourcen = initn,
+        resourceₙ = sourceₙ,
     ) do
-        use(resource1, resource2, ..., resourcen)
+        use(resource₁, resource₂, ..., resourceₙ)
     end
+
+Open resources, run the do block body, and cleanup the resources.
 """
 :(ContextManagers.@with)
 
@@ -14,6 +16,8 @@
     ContextManagers.with(init...) do resources...
         use(resources...)
     end
+
+Open resources, run the do block body, and cleanup the resources.
 """
 ContextManagers.with
 
@@ -21,9 +25,9 @@ ContextManagers.with
     ContextManagers.maybeenter(source) -> context or nothing
 
 Start a `context` managing the resource. Or return `nothing` when `source` does
-not implement the context interface.
+not implement the context manager interface.
 
-Default implementation returns `nothing`; i.e.,
+Default implementation returns `nothing`; i.e., no context manager interface.
 """
 ContextManagers.maybeenter
 
@@ -60,7 +64,7 @@ try
 finally
     ContextManagers.exit(context)
 end
-````
+```
 
 In the two-argument version `ContextManagers.exit(context, err)` (where `err` is
 `nothing` or an `Exception`), the error can be suppressed by returning
