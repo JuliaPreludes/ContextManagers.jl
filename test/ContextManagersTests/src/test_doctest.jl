@@ -5,7 +5,7 @@ using Test
 using ContextManagers
 
 function test()
-    if VERSION < v"1.5"
+    if VERSION < v"1.6"
         @test_broken false
         return
     end
