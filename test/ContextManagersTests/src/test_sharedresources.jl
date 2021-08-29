@@ -5,7 +5,7 @@ using Test
 
 function test_channel()
     @sync begin
-        ch = Channel{Int}()
+        ch = Channel{Int}(0)
         @with(handle = SharedResource(ch)) do
             for i in 1:3
                 context = open(handle)
