@@ -1,7 +1,7 @@
 name = "ContextManagers"
 uuid = "51ca0b03-0667-4ad4-bb9a-29a7d42ecc1f"
 authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
-version = "0.1.0-DEV"
+version = "0.1.0"
 
 [compat]
 julia = "1"
