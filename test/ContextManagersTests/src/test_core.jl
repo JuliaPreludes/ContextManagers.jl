@@ -1,13 +1,10 @@
 module TestCore
 
 using Test
-using ContextManagers
+using ContextManagers.++
 
-struct Suppress end
-ContextManagers.exit(::Suppress, _) = ContextManagers.Handled()
-
-function test_suppress()
-    @with(_ = Suppress()) do
+function test_ignoreerror()
+    @with(_ = IgnoreError()) do
         error("error")
     end
     @test true
@@ -30,7 +27,7 @@ end
 function test_many()
     l1 = ReentrantLock()
     l2 = ReentrantLock()
-    @with(l1, l2, ch1 = Channel(), ch2 = Channel()) do
+    @with(l1, l2, ch1 = Channel(1), ch2 = Channel(1)) do
         @test l1 isa ReentrantLock
         @test l2 isa ReentrantLock
         @test ch1 isa Channel
@@ -41,7 +38,7 @@ end
 function test_many_function()
     l1 = ReentrantLock()
     l2 = ReentrantLock()
-    ContextManagers.with(l1, l2, Channel(), Channel()) do l1, l2, ch1, ch2
+    ContextManagers.with(l1, l2, Channel(1), Channel(1)) do l1, l2, ch1, ch2
         @test l1 isa ReentrantLock
         @test l2 isa ReentrantLock
         @test ch1 isa Channel
@@ -52,7 +49,7 @@ end
 function test_error_in_exit()
     calledwith = []
     @with(
-        Suppress(),
+        IgnoreError(),
         int = ContextManagers.closingwith(111) do x
             push!(calledwith, x)
         end,

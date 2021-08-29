@@ -1,5 +1,14 @@
-ContextManagers.init(f, args...; kwargs...) = f(args...; kwargs...)
-ContextManagers.enter(x) = x
+ContextManagers.maybeenter(::Any) = nothing
+
+function _enter(source)
+    context = ContextManagers.maybeenter(source)
+    context === nothing && notasource(source)
+    return something(context)
+end
+
+function notasource(@nospecialize(source))::Union{}
+    error("Not a context source: ", source)
+end
 
 function ContextManagers.exit(x, @nospecialize(err))
     ContextManagers.exit(x)
@@ -38,22 +47,9 @@ macro with(doblock::Expr, bindings...)
         else
             error("unexpected syntax: $b")
         end
-        if Meta.isexpr(resource, :call)
-            # Transform `f(...)` to `create(f, ...)`
-            if Meta.isexpr(get(resource.args, 1, nothing), :parameters)
-                resource = Expr(
-                    :call,
-                    reosurce.args[1],
-                    ContextManagers.init,
-                    resource.args[2:end]...,
-                )
-            else
-                resource = Expr(:call, ContextManagers.init, resource.args...)
-            end
-        end
         quote
             # Using `let` so that it works with `value === resource`
-            let $context = $ContextManagers.enter($resource),
+            let $context = $_enter($resource),
                 $value = $ContextManagers.value($context),
                 $ans = nothing,
                 $handled = false
@@ -79,7 +75,7 @@ _with(f) = f()
 function _with(f::F, resource1, resources...) where {F}
     ans = nothing
     handled = false
-    context = ContextManagers.enter(resource1)
+    context = _enter(resource1)
     try
         x = ContextManagers.value(context)
         ans = _with(resources...) do args...
@@ -103,6 +99,6 @@ struct Closing{C,T}
 end
 
 ContextManagers.closingwith(close::F, value) where {F} = Closing(close, value)
-ContextManagers.enter(c::Closing) = c
+ContextManagers.maybeenter(c::Closing) = c
 ContextManagers.value(c::Closing) = c.value
 ContextManagers.exit(c::Closing) = c.close(c.value)

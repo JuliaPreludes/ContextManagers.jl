@@ -2,8 +2,7 @@ baremodule ContextManagers
 
 export @with
 
-function init end
-function enter end
+function maybeenter end
 function value end
 function exit end
 function with end
@@ -17,6 +16,17 @@ struct Handled end
 struct NonException
     value::Any
 end
+
+struct IgnoreError end
+
+function opentemp end
+function opentempdir end
+
+baremodule __ContextManagers_Extras_API
+using ..ContextManagers: @with, ContextManagers, IgnoreError, opentemp, opentempdir
+export @with, ContextManagers, IgnoreError, opentemp, opentempdir
+end  # baremodule __ContextManagers_Extras_API
+const (++) = __ContextManagers_Extras_API
 
 module Internal
 

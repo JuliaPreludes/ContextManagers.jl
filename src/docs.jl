@@ -18,22 +18,14 @@
 ContextManagers.with
 
 """
-    ContextManagers.init(f, args...; kwargs...) -> source
+    ContextManagers.maybeenter(source) -> context or nothing
 
-Create a `source` of context.
+Start a `context` managing the resource. Or return `nothing` when `source` does
+not implement the context interface.
 
-Default implementation is `f(args...; kwargs...)`.
+Default implementation returns `nothing`; i.e.,
 """
-ContextManagers.init(f, args...; kwargs...) = f(args...; kwargs...)
-
-"""
-    ContextManagers.enter(source) -> context
-
-Start a `context` managing the resource.
-
-Default implementation is a pass-through (identity) function.
-"""
-ContextManagers.enter
+ContextManagers.maybeenter
 
 """
     ContextManagers.value(context) -> resource
@@ -56,12 +48,11 @@ Roughly speaking,
 end
 ```
 
-is lowered to
+is equivalent to
 
 ```julia
-source = ContextManagers.init(f, args...)
+context = something(ContextManagers.maybeenter(source))
 try
-    context = ContextManagers.enter(source)
     resource = ContextManagers.value(context)
 
     use(resource)

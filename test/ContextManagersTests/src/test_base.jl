@@ -1,8 +1,7 @@
 module TestBase
 
 using Test
-using ContextManagers
-using ..TestCore: Suppress
+using ContextManagers.++
 
 function test_iobuffer()
     @with(io = IOBuffer()) do
@@ -31,9 +30,9 @@ function test_channel()
     @test !isopen(ch)
 end
 
-function test_mktemp_success()
+function test_opentemp_success()
     tmppath = nothing
-    @with((path, io) = mktemp()) do
+    @with((path, io) = opentemp()) do
         tmppath = path
         @test io isa IO
         @test isfile(tmppath)
@@ -41,9 +40,9 @@ function test_mktemp_success()
     @test !isfile(tmppath)
 end
 
-function test_mktemp_error()
+function test_opentemp_error()
     tmppath = Ref{Any}(nothing)
-    @with(Suppress(), (path, io) = mktemp()) do
+    @with(IgnoreError(), (path, io) = opentemp()) do
         tmppath[] = path
         @test io isa IO
         @test isfile(tmppath[])
@@ -52,18 +51,18 @@ function test_mktemp_error()
     @test !isfile(tmppath[])
 end
 
-function test_mktempdir_success()
+function test_opentempdir_success()
     tmppath = nothing
-    @with(path = mktempdir()) do
+    @with(path = opentempdir()) do
         tmppath = path
         @test isdir(tmppath)
     end
     @test !isdir(tmppath)
 end
 
-function test_mktempdir_error()
+function test_opentempdir_error()
     tmppath = Ref{Any}(nothing)
-    @with(Suppress(), path = mktempdir()) do
+    @with(IgnoreError(), path = opentempdir()) do
         tmppath[] = path
         @test isdir(tmppath[])
         error("error")
