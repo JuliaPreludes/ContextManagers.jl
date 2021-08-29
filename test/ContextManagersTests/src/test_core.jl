@@ -24,6 +24,31 @@ function test_onexit()
     @test calledwith == [111]
 end
 
+function check_onfail(witherror)
+    calledwith = []
+    thrown = try
+        @with(
+            int = ContextManagers.onfail(111) do x
+                push!(calledwith, x)
+            end,
+            io = ContextManagers.closing(IOBuffer()),
+        ) do
+            @test int == 111
+            @test io isa IOBuffer
+            witherror && error("error")
+        end
+        false
+    catch
+        true
+    end
+    return calledwith, thrown
+end
+
+function test_onfail()
+    @test check_onfail(false) == ([], false)
+    @test check_onfail(true) == ([111], true)
+end
+
 function test_many()
     l1 = ReentrantLock()
     l2 = ReentrantLock()

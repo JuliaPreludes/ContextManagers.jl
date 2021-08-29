@@ -9,6 +9,7 @@ function with end
 macro with end
 
 function onexit end
+function onfail end
 function closing end
 
 struct Handled end

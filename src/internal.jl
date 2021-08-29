@@ -60,7 +60,7 @@ macro with(doblock::Expr, bindings...)
                     $handled = $_exit($context, $err)
                     $handled || rethrow()
                 end
-                $handled || $_exit($context, nothing)
+                $handled || $ContextManagers.exit($context, nothing)
                 $ans
             end
         end
@@ -102,3 +102,18 @@ ContextManagers.onexit(close::F, value) where {F} = OnExit(close, value)
 ContextManagers.maybeenter(c::OnExit) = c
 ContextManagers.value(c::OnExit) = c.value
 ContextManagers.exit(c::OnExit) = c.close(c.value)
+
+struct OnFail{C,T}
+    close::C
+    value::T
+end
+
+ContextManagers.onfail(close::F, value) where {F} = OnFail(close, value)
+ContextManagers.maybeenter(c::OnFail) = c
+ContextManagers.value(c::OnFail) = c.value
+function ContextManagers.exit(c::OnFail, err)
+    if err !== nothing
+        c.close(c.value)
+    end
+    return nothing
+end
