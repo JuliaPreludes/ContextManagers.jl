@@ -39,8 +39,24 @@ const SharedResource = Internal.SharedResource
 
 baremodule __ContextManagers_Extras_API
 using ..ContextManagers:
-    @with, ContextManagers, IgnoreError, SharedResource, opentemp, opentempdir
-export @with, ContextManagers, IgnoreError, SharedResource, opentemp, opentempdir
+    @with,
+    ContextManagers,
+    IgnoreError,
+    SharedResource,
+    closing,
+    onexit,
+    onfail,
+    opentemp,
+    opentempdir
+export @with,
+    ContextManagers,
+    IgnoreError,
+    SharedResource,
+    closing,
+    onexit,
+    onfail,
+    opentemp,
+    opentempdir
 end  # baremodule __ContextManagers_Extras_API
 const (++) = __ContextManagers_Extras_API
 

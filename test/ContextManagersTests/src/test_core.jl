@@ -13,10 +13,10 @@ end
 function test_onexit()
     calledwith = []
     @with(
-        int = ContextManagers.onexit(111) do x
+        int = onexit(111) do x
             push!(calledwith, x)
         end,
-        io = ContextManagers.closing(IOBuffer()),
+        io = closing(IOBuffer()),
     ) do
         @test int == 111
         @test io isa IOBuffer
@@ -28,10 +28,10 @@ function check_onfail(witherror)
     calledwith = []
     thrown = try
         @with(
-            int = ContextManagers.onfail(111) do x
+            int = onfail(111) do x
                 push!(calledwith, x)
             end,
-            io = ContextManagers.closing(IOBuffer()),
+            io = closing(IOBuffer()),
         ) do
             @test int == 111
             @test io isa IOBuffer
@@ -75,10 +75,10 @@ function test_error_in_exit()
     calledwith = []
     @with(
         IgnoreError(),
-        int = ContextManagers.onexit(111) do x
+        int = onexit(111) do x
             push!(calledwith, x)
         end,
-        ContextManagers.onexit(nothing) do _
+        onexit(nothing) do _
             error("error")
         end,
     ) do
