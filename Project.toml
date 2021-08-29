@@ -7,8 +7,9 @@ version = "0.1.0-DEV"
 julia = "1"
 
 [extras]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestFunctionRunner = "792026f5-ac9a-4a19-adcb-47b0ce2deb5d"
 
 [targets]
-test = ["Test", "TestFunctionRunner"]
+test = ["Documenter", "Test", "TestFunctionRunner"]
