@@ -24,6 +24,21 @@ function test_onexit()
     @test calledwith == [111]
 end
 
+function test_non_assignment()
+    calledwith = []
+    xs = [
+        onexit(111) do x
+            push!(calledwith, x)
+        end,
+        onexit(222) do x
+            push!(calledwith, x)
+        end,
+    ]
+    @with(xs[2], xs[1]) do
+    end
+    @test calledwith == [111, 222]
+end
+
 function check_onfail(witherror)
     calledwith = []
     thrown = try
