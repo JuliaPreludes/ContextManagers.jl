@@ -24,6 +24,19 @@ function test_onexit()
     @test calledwith == [111]
 end
 
+function test_onexit_noarg()
+    calledwith = []
+    @with(
+        onexit() do
+            push!(calledwith, 111)
+        end,
+        io = closing(IOBuffer()),
+    ) do
+        @test io isa IOBuffer
+    end
+    @test calledwith == [111]
+end
+
 function test_non_assignment()
     calledwith = []
     xs = [
@@ -46,6 +59,9 @@ function check_onfail(witherror)
             int = onfail(111) do x
                 push!(calledwith, x)
             end,
+            onfail() do
+                push!(calledwith, 222)
+            end,
             io = closing(IOBuffer()),
         ) do
             @test int == 111
@@ -61,7 +77,7 @@ end
 
 function test_onfail()
     @test check_onfail(false) == ([], false)
-    @test check_onfail(true) == ([111], true)
+    @test check_onfail(true) == ([222, 111], true)
 end
 
 function test_many()

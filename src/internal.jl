@@ -93,6 +93,7 @@ ContextManagers.closing(x) = ContextManagers.onexit(close, x)
 
 """
     ContextManagers.onexit(cleanup, x)
+    ContextManagers.onexit(cleanup)
 
 Create a context manager that runs `cleanup(x)` upon exit.
 
@@ -122,8 +123,11 @@ ContextManagers.maybeenter(c::OnExit) = c
 ContextManagers.value(c::OnExit) = c.value
 ContextManagers.exit(c::OnExit) = c.close(c.value)
 
+ContextManagers.onexit(close::F) where {F} = OnExit(_ -> close(), nothing)
+
 """
     ContextManagers.onfail(cleanup, x)
+    ContextManagers.onfail(cleanup)
 
 Create a context manager that runs `cleanup(x)` upon unsuccessful exit.
 
@@ -166,3 +170,5 @@ function ContextManagers.exit(c::OnFail, err)
     end
     return nothing
 end
+
+ContextManagers.onfail(close::F) where {F} = OnFail(_ -> close(), nothing)
