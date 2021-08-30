@@ -41,11 +41,9 @@ macro with(doblock::Expr, bindings...)
             if value === :_
                 @gensym value
             end
-        elseif Meta.isexpr(b, :call) || Meta.isexpr(b, :do)
+        else
             @gensym value
             resource = b
-        else
-            error("unexpected syntax: $b")
         end
         quote
             # Using `let` so that it works with `value === resource`
