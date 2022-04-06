@@ -11,7 +11,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/tkf/ContextManagers.jl",
+    repo = "github.com/JuliaPreludes/ContextManagers.jl",
     push_preview = true,
     # See: https://juliadocs.github.io/Documenter.jl/stable/lib/public/#Documenter.deploydocs
 )
