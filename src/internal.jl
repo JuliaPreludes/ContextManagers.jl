@@ -36,7 +36,7 @@ macro with(doblock::Expr, bindings...)
         @gensym err ans handled context
         if b isa Symbol
             value = resource = b
-        elseif Meta.isexpr(b, :kw, 2)
+        elseif Meta.isexpr(b, (:kw,:(=)), 2)
             value, resource = b.args
             if value === :_
                 @gensym value
